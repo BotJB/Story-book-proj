@@ -1,4 +1,5 @@
 const express=require('express')
+const path=require('path')
 const dotenv=require('dotenv')
 const connectDB=require('./config/db')
 const morgan=require('morgan')
@@ -16,6 +17,8 @@ if(process.env.NODE_ENV==='development'){
 //Setting up the handlebars
 app.engine('.hbs', exphbs({extname: '.hbs',defaultLayout:'main'}));
 app.set('view engine', '.hbs');
+//static folder
+app.use(express.static(path.join(__dirname,'public')))
 //Basic Routes 
 app.use('/',routes)
 const PORT=process.env.PORT || 5000
