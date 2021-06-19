@@ -3,7 +3,7 @@ const router=express.Router()
 const passport=require('passport')
 //@desc Google authentication page
 //@req   type=GET 
-router.get('/google',passport.authenticate('google',{scope:['profile']}))
+router.get('/google',passport.authenticate('google',{scope:['profile','email']}))
 
 //@desc Google callback page
 //@req   type=GET 

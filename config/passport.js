@@ -1,4 +1,5 @@
 const GoogleStrategy=require('passport-google-oauth20').Strategy
+const User=require('../models/User')
 
 module.exports=function(passport){
     passport.use(new GoogleStrategy({
@@ -6,7 +7,30 @@ module.exports=function(passport){
         clientSecret:process.env.GOOGLE_CLIENT_SECRET,
         callbackURL:"/auth/google/callback"
     },async(acessToken,refreshToken,profile,done)=>{
-        console.log(profile)
+      const newUser={
+        googleId:profile.id,
+        displayName:profile.displayName,
+        familyName:profile.name.familyName,
+        givenName:profile.name.givenName,
+        email:profile.emails[0].value,
+        picture:profile.photos[0].value
+      }
+      try{
+        let user= await User.findOne({googleId:profile.id})
+        if(user){
+          done(null,user)
+        }
+        else{
+          user=await User.create(newUser)
+          done(null,user)
+        }
+      }
+      catch(err){
+        console.log(err)
+      }
+      
+     
+
     }
 
     ))
