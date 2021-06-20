@@ -28,9 +28,9 @@ if(process.env.NODE_ENV==='development'){
     app.use(morgan('dev'))
 }
 //Setting up the helpers 
-const {formatDate}=require('./helpers/hbs')
+const {formatDate,stripTags,truncate,editIcon}=require('./helpers/hbs')
 //Setting up the handlebars
-app.engine('.hbs', exphbs({helpers:{formatDate},extname: '.hbs',defaultLayout:'main'}));
+app.engine('.hbs', exphbs({helpers:{formatDate,stripTags,truncate,editIcon},extname: '.hbs',defaultLayout:'main'}));
 app.set('view engine', '.hbs');
 //static folder
 app.use(express.static(path.join(__dirname,'public')))
@@ -47,6 +47,11 @@ app.use(session({
 //Passport Config the rest here
 app.use(passport.initialize())
 app.use(passport.session())
+//Setting up the Global user 
+app.use(function(req,res,next){
+res.locals.user=req.user
+next()
+})
 //Basic Routes 
 app.use('/',routes)
 //authRoutes

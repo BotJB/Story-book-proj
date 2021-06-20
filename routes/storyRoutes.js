@@ -1,7 +1,8 @@
 const express=require('express')
 const router=express.Router()
-const story=require('../models/storyModel')
+const storyModel=require('../models/storyModel')
 const {ensureAuthenticated}=require('../middleware/authMiddleware')
+const { findOne } = require('../models/storyModel')
 //* @desc to add the story  type=GET
 router.get('/add',ensureAuthenticated,(req,res)=>{
     res.render('stories/add')
@@ -9,7 +10,7 @@ router.get('/add',ensureAuthenticated,(req,res)=>{
 router.post('/',ensureAuthenticated,async(req,res)=>{
     try{
         req.body.user = req.user.id;
-        await story.create(req.body)
+        await storyModel.create(req.body)
         res.redirect('/dashboard')
 
     }
@@ -20,13 +21,29 @@ router.post('/',ensureAuthenticated,async(req,res)=>{
 })
 router.get('/',ensureAuthenticated,async(req,res)=>{
 try{
-const stories=await story.find({status:'public'}).populate('user').sort({createdAt:'desc'}).lean()
+const stories=await storyModel.find({status:'public'}).populate('user').sort({createdAt:'desc'}).lean()
 res.render('stories/index',{
     stories,
 })
 }
 catch(err){
     console.log(err)
+}
+})
+router.get('/edit/:id',ensureAuthenticated,async(req,res)=>{
+const story=await storyModel.findOne({
+    _id:req.params.id,
+}).lean()
+if(!story){
+    res.render('/error/404')
+}
+if(story.user !=req.user.id){
+    res.redirect('/stories')
+}
+else{
+    res.render('stories/edit',{
+        story,
+    })
 }
 })
 module.exports = router
