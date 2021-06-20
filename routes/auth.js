@@ -10,4 +10,10 @@ router.get('/google',passport.authenticate('google',{scope:['profile','email']})
 router.get('/google/callback',passport.authenticate('google',{failureRedirect:'/'}),(req,res)=>{
     res.redirect('/dashboard')
 })
+// @desc logout route
+//@req type=GET
+router.get('/logout',(req,res)=>{
+    req.logOut()
+    res.redirect('/')
+})
 module.exports = router

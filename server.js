@@ -9,6 +9,8 @@ const googleAuth=require('./config/passport')
 const passport=require('passport')
 const authRoutes=require('./routes/auth')
 const session=require('express-session')
+const mongoose=require('mongoose')
+const MongoStore=require('connect-mongo')
 
 // Load the config file
 dotenv.config({path:'./config/config.env'});
@@ -31,6 +33,9 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false,
+    store:MongoStore.create({
+        mongoUrl:process.env.MONGO_URI
+    })
     
   }))
 //Passport Config the rest here
