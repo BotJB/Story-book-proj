@@ -27,8 +27,10 @@ app.use(express.json())
 if(process.env.NODE_ENV==='development'){
     app.use(morgan('dev'))
 }
+//Setting up the helpers 
+const {formatDate}=require('./helpers/hbs')
 //Setting up the handlebars
-app.engine('.hbs', exphbs({extname: '.hbs',defaultLayout:'main'}));
+app.engine('.hbs', exphbs({helpers:{formatDate},extname: '.hbs',defaultLayout:'main'}));
 app.set('view engine', '.hbs');
 //static folder
 app.use(express.static(path.join(__dirname,'public')))
