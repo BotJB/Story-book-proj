@@ -11,6 +11,7 @@ const authRoutes=require('./routes/auth')
 const session=require('express-session')
 const mongoose=require('mongoose')
 const MongoStore=require('connect-mongo')
+const stroyRoutes=require('./routes/storyRoutes')
 
 // Load the config file
 dotenv.config({path:'./config/config.env'});
@@ -20,6 +21,9 @@ connectDB()
 googleAuth(passport)
 //setting the app
 const app=express();
+//adding the body parser for the forms
+app.use(express.urlencoded({extended:false}))
+app.use(express.json())
 if(process.env.NODE_ENV==='development'){
     app.use(morgan('dev'))
 }
@@ -45,6 +49,8 @@ app.use(passport.session())
 app.use('/',routes)
 //authRoutes
 app.use('/auth',authRoutes)
+//Story routes 
+app.use('/stories',stroyRoutes)
 const PORT=process.env.PORT || 5000
 app.listen(PORT,()=>{
     console.log(`Server is up and running on ${PORT}`)
