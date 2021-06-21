@@ -46,4 +46,27 @@ else{
     })
 }
 })
+router.put('/:id', ensureAuthenticated, async (req, res) => {
+    try {
+      let story = await storyModel.findById(req.params.id).lean()
+  
+      if (!story) {
+        return res.render('error/404')
+      }
+  
+      if (story.user != req.user.id) {
+        res.redirect('/stories')
+      } else {
+        story = await storyModel.findOneAndUpdate({ _id: req.params.id }, req.body, {
+          new: true,
+          runValidators: true,
+        })
+  
+        res.redirect('/dashboard')
+      }
+    } catch (err) {
+      console.error(err)
+      return res.render('error/500')
+    }
+  })
 module.exports = router

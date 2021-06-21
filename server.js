@@ -12,6 +12,7 @@ const session=require('express-session')
 const mongoose=require('mongoose')
 const MongoStore=require('connect-mongo')
 const stroyRoutes=require('./routes/storyRoutes')
+const methodOverride=require('method-override')
 
 // Load the config file
 dotenv.config({path:'./config/config.env'});
@@ -32,6 +33,16 @@ const {formatDate,stripTags,truncate,editIcon}=require('./helpers/hbs')
 //Setting up the handlebars
 app.engine('.hbs', exphbs({helpers:{formatDate,stripTags,truncate,editIcon},extname: '.hbs',defaultLayout:'main'}));
 app.set('view engine', '.hbs');
+//Method override setup
+// app.use(methodOverride(function (req, res) {
+//     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+//       // look in urlencoded POST bodies and delete it
+//       let method = req.body._method
+//       delete req.body._method
+//       return method
+//     }
+//   }))
+app.use(methodOverride('_method'))
 //static folder
 app.use(express.static(path.join(__dirname,'public')))
 //Setting up the session with express session
