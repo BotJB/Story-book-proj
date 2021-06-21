@@ -69,4 +69,24 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
       return res.render('error/500')
     }
   })
+  router.delete('/:id',ensureAuthenticated,async(req,res)=>{
+try{
+    
+    let story = await storyModel.findOne({_id: req.params.id})
+    if(!story){
+        res.redirect('error/404')
+
+    }
+    else{
+        await storyModel.findByIdAndDelete(req.params.id)
+        res.redirect('/dashboard')
+    }
+    
+
+}
+catch(err){
+    console.error(err)
+    return res.render('error/500')
+}
+  })
 module.exports = router
